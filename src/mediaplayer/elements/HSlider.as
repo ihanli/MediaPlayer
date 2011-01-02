@@ -20,13 +20,13 @@ package mediaplayer.elements
 		private const THUMBDIMENSION:uint = 10;
 		private const THUMBOFFSET:uint = 2;
 		
-		public function HSlider()
+		public function HSlider(pmin:int = 0, pmax:int = 1, startValue:Number = 0.3)
 		{
 			super();
 			
-			_min = 0;
-			_max = 1;
-			_value = 0;
+			_min = pmin;
+			_max = pmax;
+			_value = startValue;
 			
 			rail = new Sprite;
 			rail.graphics.lineStyle(1, 0x000000);
@@ -34,7 +34,7 @@ package mediaplayer.elements
 			rail.graphics.drawRect(0, 0, RAILWIDTH + THUMBDIMENSION + 2 * THUMBOFFSET, THUMBDIMENSION + 2 * THUMBOFFSET);
 			rail.graphics.endFill();
 			rail.x = 0;
-			rail.y = 15;
+			rail.y = 0;
 
 			thumb = new Sprite;
 			thumb.graphics.lineStyle(1, 0x000000);
