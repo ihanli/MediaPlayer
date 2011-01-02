@@ -68,14 +68,12 @@ package mediaplayer.elements
 			draggedInstance = null;
 		}
 		
-		private function mouseMoveHandler(event:MouseEvent):void
+		protected function mouseMoveHandler(event:MouseEvent):void
 		{
 			draggedInstance.x = Math.max(0, Math.min(RAILWIDTH, mouseX));
 			event.updateAfterEvent();
 			
 			_value = (_max * draggedInstance.x / RAILWIDTH) + (_min * (RAILWIDTH - draggedInstance.x) / RAILWIDTH);
-			
-			dispatchEvent(new Event("VALUE_CHANGED"));
 		}
 
 		public function get min():int
