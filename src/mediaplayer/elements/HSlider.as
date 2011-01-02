@@ -74,6 +74,8 @@ package mediaplayer.elements
 			event.updateAfterEvent();
 			
 			_value = (_max * draggedInstance.x / RAILWIDTH) + (_min * (RAILWIDTH - draggedInstance.x) / RAILWIDTH);
+			
+			dispatchEvent(new Event("VALUE_CHANGED"));
 		}
 
 		public function get min():int
