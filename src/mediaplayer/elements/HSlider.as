@@ -15,7 +15,7 @@ package mediaplayer.elements
 
 		private const RAILWIDTH:uint = 100;
 		
-		private var thumb:Sprite;
+		private var thumb:Sprite = new Sprite;
 		private const THUMBDIMENSION:uint = 10;
 		private const THUMBOFFSET:uint = 2;
 		
@@ -33,8 +33,7 @@ package mediaplayer.elements
 			this.graphics.endFill();
 			this.x = 0;
 			this.y = 0;
-
-			thumb = new Sprite;
+			
 			thumb.graphics.lineStyle(1, 0x000000);
 			thumb.graphics.beginFill(0xFFFFFF);
 			thumb.graphics.drawRect(THUMBOFFSET, THUMBOFFSET, THUMBDIMENSION, THUMBDIMENSION);
