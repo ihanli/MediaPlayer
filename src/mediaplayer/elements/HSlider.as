@@ -12,8 +12,7 @@ package mediaplayer.elements
 		private var _min:int;
 		private var _max:int;
 		private var draggedInstance:Sprite;
-		
-		private var rail:Sprite;
+
 		private const RAILWIDTH:uint = 100;
 		
 		private var thumb:Sprite;
@@ -27,14 +26,13 @@ package mediaplayer.elements
 			_min = pmin;
 			_max = pmax;
 			_value = startValue;
-			
-			rail = new Sprite;
-			rail.graphics.lineStyle(1, 0x000000);
-			rail.graphics.beginFill(0xFFFFFF);
-			rail.graphics.drawRect(0, 0, RAILWIDTH + THUMBDIMENSION + 2 * THUMBOFFSET, THUMBDIMENSION + 2 * THUMBOFFSET);
-			rail.graphics.endFill();
-			rail.x = 0;
-			rail.y = 0;
+
+			this.graphics.lineStyle(1, 0x000000);
+			this.graphics.beginFill(0xFFFFFF);
+			this.graphics.drawRect(0, 0, RAILWIDTH + THUMBDIMENSION + 2 * THUMBOFFSET, THUMBDIMENSION + 2 * THUMBOFFSET);
+			this.graphics.endFill();
+			this.x = 0;
+			this.y = 0;
 
 			thumb = new Sprite;
 			thumb.graphics.lineStyle(1, 0x000000);
@@ -42,9 +40,7 @@ package mediaplayer.elements
 			thumb.graphics.drawRect(THUMBOFFSET, THUMBOFFSET, THUMBDIMENSION, THUMBDIMENSION);
 			thumb.graphics.endFill();
 
-			addChild(rail);
-			rail.addChild(thumb);
-			
+			addChild(thumb);
 			thumb.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
 		}
 		
