@@ -66,7 +66,7 @@ package mediaplayer.controls
 		protected function mouseMoveHandler(event:MouseEvent):void
 		{
 			draggedInstance.x = Math.max(0, Math.min(RAILWIDTH, mouseX));
-			event.updateAfterEvent();
+//			event.updateAfterEvent();
 			
 			_value = (_max * draggedInstance.x / RAILWIDTH) + (_min * (RAILWIDTH - draggedInstance.x) / RAILWIDTH);
 		}
