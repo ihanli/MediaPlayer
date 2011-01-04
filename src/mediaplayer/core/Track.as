@@ -40,6 +40,8 @@ package mediaplayer.core
 			sound.addEventListener(Event.COMPLETE, onSoundLoad);
 			sound.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
 			soundChannel.addEventListener(Event.SOUND_COMPLETE, onSoundComplete);
+			
+			//TODO: sounds will be played simultaniously after double click
 			this.addEventListener(MouseEvent.DOUBLE_CLICK, play);
 		}
 		
