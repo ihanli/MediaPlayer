@@ -1,6 +1,7 @@
 package mediaplayer.core
 {
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.media.Sound;
 	import flash.media.SoundChannel;
@@ -38,6 +39,7 @@ package mediaplayer.core
 			
 			sound.addEventListener(Event.COMPLETE, onSoundLoad);
 			sound.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
+			soundChannel.addEventListener(Event.SOUND_COMPLETE, onSoundComplete);
 			this.addEventListener(MouseEvent.DOUBLE_CLICK, play);
 		}
 		
@@ -67,6 +69,12 @@ package mediaplayer.core
 			}
 		}
 		
+		private function onSoundComplete(event:Event):void {
+			removeListeners();
+			
+			dispatchEvent(new Event("NEXT_TRACK"));
+		}
+		
 		private function onSoundLoad(event:Event):void {
 			removeListeners();
 			
@@ -87,6 +95,7 @@ package mediaplayer.core
 		{
 			sound.removeEventListener(Event.COMPLETE, onSoundLoad);
 			sound.removeEventListener(IOErrorEvent.IO_ERROR, onIOError);
+			soundChannel.removeEventListener(Event.SOUND_COMPLETE, onSoundComplete);
 		}
 		
 		public function set volume(value:Number):void
