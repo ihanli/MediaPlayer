@@ -1,4 +1,4 @@
-package mediaplayer.elements
+package mediaplayer.controls
 {
 	import flash.display.Shape;
 	import flash.display.SimpleButton;

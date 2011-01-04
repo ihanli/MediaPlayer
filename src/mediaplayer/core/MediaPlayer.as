@@ -1,7 +1,7 @@
 package mediaplayer.core
 {
 	import flash.display.Sprite;
-	import mediaplayer.elements.*;
+	import mediaplayer.controls.*;
 	
 	public class MediaPlayer extends Sprite
 	{
