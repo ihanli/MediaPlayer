@@ -38,7 +38,7 @@ package mediaplayer.core
 			sound.addEventListener(Event.COMPLETE, onSoundLoad);
 			sound.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
 			soundChannel.addEventListener(Event.SOUND_COMPLETE, onSoundComplete);
-			
+
 			//TODO: sounds will be played simultaniously after double click
 			this.doubleClickEnabled = true;
 			this.mouseChildren = false;
@@ -103,6 +103,11 @@ package mediaplayer.core
 		public function get volume():Number
 		{
 			return soundChannel.soundTransform.volume;
+		}
+		
+		public function get totalTime():Number
+		{
+			return sound.length;
 		}
 		
 		public function set pan(value:Number):void

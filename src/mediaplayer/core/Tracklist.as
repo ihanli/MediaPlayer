@@ -18,6 +18,11 @@ package mediaplayer.core
 		{
 			super();
 		}
+		
+		public function get totalTime():Number
+		{
+			return tracks[playIndex].totalTime;
+		}
 
 		public function get source():String
 		{
@@ -99,6 +104,8 @@ package mediaplayer.core
 			}
 			
 			tracks[playIndex].playing = true;
+			
+			dispatchEvent(new Event("NEXT"));
 		}
 
 		private function onLoad(event:Event):void
