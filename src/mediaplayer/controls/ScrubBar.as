@@ -7,88 +7,87 @@ package mediaplayer.controls
 
 	public class ScrubBar extends HSlider
 	{
-		private const SAMPLINGRATE:uint = 44100;
-		private var _maxSamples:uint;
-		private var _currentSample:uint;
-		private var tfMaxSamples:TextField = new TextField;
-		private var tfCurrentSample:TextField = new TextField;
+		private var _maxTime:uint;
+		private var _currentTime:uint;
+		private var tfMaxTime:TextField = new TextField;
+		private var tfCurrentTime:TextField = new TextField;
 		
 		public function ScrubBar(pmin:int=0, pmax:int=1)
 		{
 			super(pmin, pmax, 0);
 			
-			tfMaxSamples.defaultTextFormat = new TextFormat("Arial", 10);
-			tfMaxSamples.multiline = false;
-			tfMaxSamples.selectable = false;
-			tfMaxSamples.wordWrap = true;
-			tfMaxSamples.height = super.height;
-			tfMaxSamples.x = super.x + super.width;
-			tfMaxSamples.y = super.y;
+			tfMaxTime.defaultTextFormat = new TextFormat("Arial", 10);
+			tfMaxTime.multiline = false;
+			tfMaxTime.selectable = false;
+			tfMaxTime.wordWrap = true;
+			tfMaxTime.height = super.height;
+			tfMaxTime.x = super.x + super.width;
+			tfMaxTime.y = super.y;
 			
 			if(pmax > 1){
-				tfMaxSamples.text = samplesToTime(pmax);
+				tfMaxTime.text = mSecondsToTime(pmax);
 			}
 			else{
-				tfMaxSamples.text = "0:0"
+				tfMaxTime.text = "0:0"
 			}
 			
-			tfCurrentSample.defaultTextFormat = new TextFormat("Arial", 10);
-			tfCurrentSample.multiline = false;
-			tfCurrentSample.selectable = false;
-			tfCurrentSample.wordWrap = true;
-			tfCurrentSample.height = super.height;
-			tfCurrentSample.text = "0:0";
-			tfCurrentSample.width = tfCurrentSample.textWidth * 1.5;
+			tfCurrentTime.defaultTextFormat = new TextFormat("Arial", 10);
+			tfCurrentTime.multiline = false;
+			tfCurrentTime.selectable = false;
+			tfCurrentTime.wordWrap = true;
+			tfCurrentTime.height = super.height;
+			tfCurrentTime.text = "0:0";
+			tfCurrentTime.width = tfCurrentTime.textWidth * 1.5;
 
-			tfCurrentSample.x = super.x - tfCurrentSample.textWidth - 5;
-			tfCurrentSample.y = super.y;
+			tfCurrentTime.x = super.x - tfCurrentTime.textWidth - 5;
+			tfCurrentTime.y = super.y;
 
-			addChild(tfMaxSamples);
-			addChild(tfCurrentSample);
+			addChild(tfMaxTime);
+			addChild(tfCurrentTime);
 		}
 		
 		protected override function mouseMoveHandler(event:MouseEvent):void
 		{
 			super.mouseMoveHandler(event);
 			
-			tfCurrentSample.text = samplesToTime(super.value);
+			tfCurrentTime.text = mSecondsToTime(super.value);
 			dispatchEvent(new Event("TIME_CHANGED"));
 		}
 		
-		private function samplesToTime(samples:uint):String
+		private function mSecondsToTime(value:uint):String
 		{
 			var seconds:uint, minutes:uint;
 			
-			minutes = samples / SAMPLINGRATE / 3600;
-			seconds = (samples / SAMPLINGRATE) % 3600;
+			minutes = value / 1000 / 60;
+			seconds = (value / 1000) % 60;
 
 			return minutes + ":" + seconds;
 		}
 
-		public function get maxSamples():uint
+		public function get maxTime():uint
 		{
-			return _maxSamples;
+			return _maxTime;
 		}
 
-		public function set maxSamples(value:uint):void
+		public function set maxTime(value:uint):void
 		{
-			_maxSamples = value;
+			_maxTime = value;
 			
-			super.max = _maxSamples;
-			tfMaxSamples.text = samplesToTime(value);
+			super.max = _maxTime;
+			tfMaxTime.text = mSecondsToTime(value);
 		}
 
-		public function get currentSample():uint
+		public function get currentTime():uint
 		{
-			return _currentSample;
+			return _currentTime;
 		}
 
-		public function set currentSample(value:uint):void
+		public function set currentTime(value:uint):void
 		{
-			_currentSample = value;
+			_currentTime = value;
 			
 			super.value = value;
-			tfCurrentSample.text = samplesToTime(value);
+			tfCurrentTime.text = mSecondsToTime(value);
 		}
 	}
 }
