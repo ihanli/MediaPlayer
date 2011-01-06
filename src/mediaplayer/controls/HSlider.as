@@ -25,7 +25,7 @@ package mediaplayer.controls
 			
 			_min = pmin;
 			_max = pmax;
-			_value = startValue;
+			value = startValue;
 
 			this.graphics.lineStyle(1, 0x000000);
 			this.graphics.beginFill(0xFFFFFF);
@@ -66,7 +66,6 @@ package mediaplayer.controls
 		protected function mouseMoveHandler(event:MouseEvent):void
 		{
 			draggedInstance.x = Math.max(0, Math.min(RAILWIDTH, mouseX));
-//			event.updateAfterEvent();
 			
 			_value = (_max * draggedInstance.x / RAILWIDTH) + (_min * (RAILWIDTH - draggedInstance.x) / RAILWIDTH);
 		}

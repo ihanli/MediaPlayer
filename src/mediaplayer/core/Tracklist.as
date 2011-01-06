@@ -23,6 +23,11 @@ package mediaplayer.core
 		{
 			return tracks[playIndex].totalTime;
 		}
+		
+		public function get elapsedTime():Number
+		{
+			return tracks[playIndex].elapsedTime;
+		}
 
 		public function get source():String
 		{

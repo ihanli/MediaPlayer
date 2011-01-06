@@ -35,7 +35,6 @@ package mediaplayer.core
 
 			_url = url
 			sound.load(new URLRequest("runtime-assets/" + url));
-			
 			sound.addEventListener(Event.COMPLETE, onSoundLoad);
 			sound.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
 			soundChannel.addEventListener(Event.SOUND_COMPLETE, onSoundComplete);
@@ -63,6 +62,7 @@ package mediaplayer.core
 			if(soundChannel)
 			{
 				soundChannel.stop();
+				_volume = soundChannel.soundTransform.volume;
 				soundChannel = null;
 			}
 		}
@@ -113,6 +113,11 @@ package mediaplayer.core
 			return sound.length;
 		}
 		
+		public function get elapsedTime():Number
+		{
+			return soundChannel.position;
+		}
+		
 		public function set pan(value:Number):void
 		{
 			if(soundChannel)
@@ -145,7 +150,6 @@ package mediaplayer.core
 			{
 				tf.backgroundColor = 0xFFFFFF;
 				lastPosition = 0;
-				_volume = soundChannel.soundTransform.volume;
 				stopSound();
 			}
 		}

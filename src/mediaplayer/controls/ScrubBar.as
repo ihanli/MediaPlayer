@@ -4,11 +4,10 @@ package mediaplayer.controls
 	import flash.events.MouseEvent;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
+	import flash.text.TextFieldAutoSize;
 
 	public class ScrubBar extends HSlider
 	{
-		private var _maxTime:uint;
-		private var _currentTime:uint;
 		private var tfMaxTime:TextField = new TextField;
 		private var tfCurrentTime:TextField = new TextField;
 		
@@ -23,6 +22,7 @@ package mediaplayer.controls
 			tfMaxTime.height = super.height;
 			tfMaxTime.x = super.x + super.width;
 			tfMaxTime.y = super.y;
+			tfMaxTime.autoSize = TextFieldAutoSize.LEFT;
 			
 			if(pmax > 1){
 				tfMaxTime.text = mSecondsToTime(pmax);
@@ -37,9 +37,10 @@ package mediaplayer.controls
 			tfCurrentTime.wordWrap = true;
 			tfCurrentTime.height = super.height;
 			tfCurrentTime.text = "0:0";
-			tfCurrentTime.width = tfCurrentTime.textWidth * 1.5;
+//			tfCurrentTime.width = tfCurrentTime.textWidth * 2;
+			tfCurrentTime.autoSize = TextFieldAutoSize.LEFT;
 
-			tfCurrentTime.x = super.x - tfCurrentTime.textWidth - 5;
+			tfCurrentTime.x = super.x - tfCurrentTime.textWidth - 10;
 			tfCurrentTime.y = super.y;
 
 			addChild(tfMaxTime);
@@ -64,28 +65,24 @@ package mediaplayer.controls
 			return minutes + ":" + seconds;
 		}
 
-		public function get maxTime():uint
+		public override function get max():int
 		{
-			return _maxTime;
+			return super.max;
 		}
 
-		public function set maxTime(value:uint):void
+		public override function set max(value:int):void
 		{
-			_maxTime = value;
-			
-			super.max = _maxTime;
+			super.max = value;
 			tfMaxTime.text = mSecondsToTime(value);
 		}
 
-		public function get currentTime():uint
+		public override function get value():Number
 		{
-			return _currentTime;
+			return super.value;
 		}
 
-		public function set currentTime(value:uint):void
+		public override function set value(value:Number):void
 		{
-			_currentTime = value;
-			
 			super.value = value;
 			tfCurrentTime.text = mSecondsToTime(value);
 		}
