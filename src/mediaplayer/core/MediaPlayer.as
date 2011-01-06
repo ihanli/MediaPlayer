@@ -15,6 +15,8 @@ package mediaplayer.core
 		public function MediaPlayer()
 		{
 			super();
+			
+			volumeSlider.addEventListener("VOLUME_CHANGED", volumeChanged);
 
 			timeline.x = 0;
 			timeline.y = 15;
@@ -36,8 +38,14 @@ package mediaplayer.core
 			addChild(tracklist);
 		}
 		
+		private function volumeChanged(event:Event = null):void
+		{
+			tracklist.volume = volumeSlider.value;
+		}
+		
 		private function onPlay(event:Event):void
 		{
+			volumeChanged();
 			tracklist.start();
 			refreshTotalTime();
 		}

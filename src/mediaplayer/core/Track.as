@@ -17,6 +17,7 @@ package mediaplayer.core
 		private var lastPosition:Number = 0;
 		private var _url:String;
 		private var _playing:Boolean = false;
+		private var _volume:Number = 0;
 		private var tf:TextField = new TextField;
 		
 		public function Track(url:String)
@@ -94,15 +95,17 @@ package mediaplayer.core
 		
 		public function set volume(value:Number):void
 		{
+			_volume = value;
+			
 			if(soundChannel)
 			{
-				soundChannel.soundTransform.volume = value;
+				soundChannel.soundTransform = new SoundTransform(value);
 			}
 		}
 		
 		public function get volume():Number
 		{
-			return soundChannel.soundTransform.volume;
+			return _volume;
 		}
 		
 		public function get totalTime():Number
@@ -135,12 +138,14 @@ package mediaplayer.core
 			if(_playing == true)
 			{
 				tf.backgroundColor = 0x3333AA;
-				soundChannel = sound.play(lastPosition);
+
+				soundChannel = sound.play(lastPosition, 0, new SoundTransform(_volume));
 			}
 			else
 			{
 				tf.backgroundColor = 0xFFFFFF;
 				lastPosition = 0;
+				_volume = soundChannel.soundTransform.volume;
 				stopSound();
 			}
 		}
