@@ -1,18 +1,19 @@
 package mediaplayer.core
 {
-	import flash.display.Sprite;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
+	import flash.display.MovieClip;
+	import flash.events.*;
 	import flash.media.Sound;
 	import flash.media.SoundChannel;
 	import flash.media.SoundTransform;
 	import flash.net.URLRequest;
 	import flash.text.TextField;
+	import flash.text.TextFieldAutoSize;
+	import flash.text.TextFormat;
 	
-	public class Track extends Sprite
+	public class Track extends MovieClip
 	{
 		private var sound:Sound = new Sound;
-		private var soundChannel:SoundChannel;
+		private var soundChannel:SoundChannel = new SoundChannel;
 		private var lastPosition:Number = 0;
 		private var _url:String;
 		private var _playing:Boolean = false;
@@ -21,33 +22,38 @@ package mediaplayer.core
 		public function Track(url:String)
 		{
 			super();
-			
-			this.height = 15;
-			this.width = 100;
-			
+
 			tf.defaultTextFormat = new TextFormat("Arial", 10);
 			tf.background = true;
 			tf.backgroundColor = 0xFFFFFF;
 			tf.multiline = false;
-			tf.height = this.height;
-			tf.width = this.width;
+			tf.selectable = false;
 			tf.x = 0;
 			tf.y = 0;
+			tf.autoSize = TextFieldAutoSize.LEFT;
 
 			_url = url
-			sound.load(new URLRequest(url));
+			sound.load(new URLRequest("runtime-assets/" + url));
 			
 			sound.addEventListener(Event.COMPLETE, onSoundLoad);
 			sound.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
 			soundChannel.addEventListener(Event.SOUND_COMPLETE, onSoundComplete);
 			
 			//TODO: sounds will be played simultaniously after double click
-			this.addEventListener(MouseEvent.DOUBLE_CLICK, play);
+			this.doubleClickEnabled = true;
+			this.mouseChildren = false;
+			this.addEventListener(MouseEvent.DOUBLE_CLICK, onDoubleClick);
 		}
 		
-		public function play():void
+		public function start():void
 		{
 			soundChannel = sound.play(lastPosition);
+		}
+		
+		private function onDoubleClick(event:MouseEvent):void
+		{
+			playing = true;
+			start();
 		}
 		
 		public function pause():void
@@ -56,7 +62,7 @@ package mediaplayer.core
 			stopSound();
 		}
 		
-		public function stop():void
+		public function reset():void
 		{
 			lastPosition = 0;
 			stopSound();
@@ -79,17 +85,15 @@ package mediaplayer.core
 		
 		private function onSoundLoad(event:Event):void {
 			removeListeners();
-			
 			tf.text = sound.id3.artist + " - " + sound.id3.songName;
-
 			addChild(tf);
-
 			dispatchEvent(new Event(Event.COMPLETE));
 		}
 		
+		//TODO: handle me
 		private function onIOError(event:Event):void {
 			removeListeners();
-			
+
 			dispatchEvent(new ErrorEvent(ErrorEvent.ERROR));
 		}
 		
@@ -105,7 +109,6 @@ package mediaplayer.core
 			if(soundChannel)
 			{
 				soundChannel.soundTransform.volume = value;
-				event.updateAfterEvent();
 			}
 		}
 		
@@ -119,7 +122,6 @@ package mediaplayer.core
 			if(soundChannel)
 			{
 				soundChannel.soundTransform.pan = value;
-				event.updateAfterEvent();
 			}
 		}
 		
@@ -139,7 +141,7 @@ package mediaplayer.core
 			
 			if(_playing == true)
 			{
-				tf.backgroundColor = 0x3333FF;
+				tf.backgroundColor = 0x3333AA;
 			}
 			else
 			{
