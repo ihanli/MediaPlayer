@@ -44,16 +44,11 @@ package mediaplayer.core
 			this.mouseChildren = false;
 			this.addEventListener(MouseEvent.DOUBLE_CLICK, onDoubleClick);
 		}
-		
-		public function start():void
-		{
-			soundChannel = sound.play(lastPosition);
-		}
-		
+
 		private function onDoubleClick(event:MouseEvent):void
 		{
 			playing = true;
-			start();
+			dispatchEvent(new Event("SOUND_STARTED"));
 		}
 		
 		public function pause():void
@@ -61,13 +56,7 @@ package mediaplayer.core
 			lastPosition = soundChannel.position;
 			stopSound();
 		}
-		
-		public function reset():void
-		{
-			lastPosition = 0;
-			stopSound();
-		}
-		
+
 		private function stopSound():void
 		{
 			if(soundChannel)
@@ -80,7 +69,7 @@ package mediaplayer.core
 		private function onSoundComplete(event:Event):void {
 			removeListeners();
 			
-			dispatchEvent(new Event("NEXT_TRACK"));
+			dispatchEvent(new Event(Event.SOUND_COMPLETE));
 		}
 		
 		private function onSoundLoad(event:Event):void {
@@ -101,7 +90,6 @@ package mediaplayer.core
 		{
 			sound.removeEventListener(Event.COMPLETE, onSoundLoad);
 			sound.removeEventListener(IOErrorEvent.IO_ERROR, onIOError);
-			soundChannel.removeEventListener(Event.SOUND_COMPLETE, onSoundComplete);
 		}
 		
 		public function set volume(value:Number):void
@@ -142,10 +130,13 @@ package mediaplayer.core
 			if(_playing == true)
 			{
 				tf.backgroundColor = 0x3333AA;
+				soundChannel = sound.play(lastPosition);
 			}
 			else
 			{
 				tf.backgroundColor = 0xFFFFFF;
+				lastPosition = 0;
+				stopSound();
 			}
 		}
 

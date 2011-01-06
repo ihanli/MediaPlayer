@@ -11,6 +11,7 @@ package mediaplayer.core
 		private var urlLoader:URLLoader;
 		private var tracks:Vector.<Track> = new Vector.<Track>();
 		private var loadIndex:uint = 0;
+		private var playIndex:uint = 0;
 		private var maxContentWidth:uint = 0;
 		
 		public function Tracklist()
@@ -35,6 +36,31 @@ package mediaplayer.core
 			urlLoader.load(urlRequest);
 		}
 		
+		public function start():void
+		{
+			tracks[playIndex].playing = true;
+		}
+		
+		public function reset():void
+		{
+			tracks[playIndex].playing = false;
+		}
+		
+		public function pause():void
+		{
+			tracks[playIndex].pause();
+		}
+		
+		public function set volume(value:Number):void
+		{
+			tracks[playIndex].volume = value;
+		}
+		
+		public function set pan(value:Number):void
+		{
+			tracks[playIndex].pan = value;
+		}
+		
 		private function loadingCompleteHandler(event:Event):void
 		{
 			urlLoader.removeEventListener(Event.COMPLETE, loadingCompleteHandler);
@@ -52,9 +78,27 @@ package mediaplayer.core
 			for each(var node:XML in xml.track) {
 				var temporaryTrack:Track = new Track(node.attribute("source").toString());
 				temporaryTrack.addEventListener(Event.COMPLETE, onLoad);
+				temporaryTrack.addEventListener("SOUND_STARTED", setPlayIndex);
+				temporaryTrack.addEventListener(Event.SOUND_COMPLETE, playNext);
 
 				tracks.push(temporaryTrack);
 			}
+		}
+		
+		private function playNext(event:Event):void
+		{
+			tracks[playIndex].playing = false;
+			
+			if(playIndex + 1 > tracks.length)
+			{
+				playIndex = 0;
+			}
+			else
+			{
+				playIndex++;
+			}
+			
+			tracks[playIndex].playing = true;
 		}
 
 		private function onLoad(event:Event):void
@@ -69,6 +113,17 @@ package mediaplayer.core
 			}
 
 			loadIndex++;
+		}
+		
+		private function setPlayIndex(event:Event):void
+		{
+			for(var i:uint = 0;i < tracks.length;i++)
+			{
+				if(tracks[i].playing == true)
+				{
+					playIndex = i;
+				}
+			}
 		}
 		
 		private function loadingErrorHandler(event:IOErrorEvent):void {
