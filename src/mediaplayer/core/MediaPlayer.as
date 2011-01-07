@@ -30,12 +30,17 @@ package mediaplayer.core
 			tracklist.source = "runtime-assets/tracks.xml";
 			tracklist.x = 0;
 			tracklist.y = 51;
-			tracklist.addEventListener("NEXT", refreshTimeLine);
+			tracklist.addEventListener("NEXT", refreshControls);
 			
 			addChild(volumeSlider);
 			addChild(timeline);
 			addChild(controls);
 			addChild(tracklist);
+		}
+		
+		private function onTimeChanged(event:Event):void
+		{
+			tracklist.elapsedTime = timeline.value;
 		}
 		
 		private function volumeChanged(event:Event = null):void
@@ -48,33 +53,41 @@ package mediaplayer.core
 			timeline.value = tracklist.elapsedTime;
 		}
 		
-		private function onPlay(event:Event):void
+		private function onPlay(event:Event = null):void
 		{
 			volumeChanged();
-			trace(volumeSlider.value);
 			tracklist.start();
 			timeline.max = tracklist.totalTime;
 			
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
+			timeline.addEventListener("TIME_CHANGED", onTimeChanged);
 		}
 		
 		private function onPause(event:Event):void
 		{
 			tracklist.pause();
 			removeEventListener(Event.ENTER_FRAME, onEnterFrame);
+			timeline.removeEventListener("TIME_CHANGED", onTimeChanged);
 		}
 		
 		private function onStop(event:Event):void
 		{
 			tracklist.reset();
-			refreshTimeLine();
-			removeEventListener(Event.ENTER_FRAME, onEnterFrame);
-		}
-		
-		private function refreshTimeLine(event:Event = null):void
-		{
 			timeline.max = tracklist.totalTime;
 			timeline.value = 0;
+			removeEventListener(Event.ENTER_FRAME, onEnterFrame);
+			timeline.removeEventListener("TIME_CHANGED", onTimeChanged);
+		}
+		
+		private function refreshControls(event:Event = null):void
+		{
+			removeEventListener(Event.ENTER_FRAME, onEnterFrame);
+			volumeChanged();
+			timeline.max = tracklist.totalTime;
+			timeline.value = 0;
+			controls.pressPlay();
+			addEventListener(Event.ENTER_FRAME, onEnterFrame);
+			timeline.addEventListener("TIME_CHANGED", onTimeChanged);
 		}
 	}
 }

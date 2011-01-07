@@ -12,7 +12,6 @@ package mediaplayer.core
 		private var tracks:Vector.<Track> = new Vector.<Track>();
 		private var loadIndex:uint = 0;
 		private var playIndex:uint = 0;
-		private var maxContentWidth:uint = 0;
 		
 		public function Tracklist()
 		{
@@ -27,6 +26,11 @@ package mediaplayer.core
 		public function get elapsedTime():Number
 		{
 			return tracks[playIndex].elapsedTime;
+		}
+		
+		public function set elapsedTime(value:Number):void
+		{
+			tracks[playIndex].elapsedTime = value;
 		}
 
 		public function get source():String
@@ -88,9 +92,8 @@ package mediaplayer.core
 			for each(var node:XML in xml.track) {
 				var temporaryTrack:Track = new Track(node.attribute("source").toString());
 				temporaryTrack.addEventListener(Event.COMPLETE, onLoad);
-				temporaryTrack.addEventListener("SOUND_STARTED", setPlayIndex);
+				temporaryTrack.addEventListener("SOUND_STARTED", handlePreviousSound);
 				temporaryTrack.addEventListener(Event.SOUND_COMPLETE, playNext);
-
 				tracks.push(temporaryTrack);
 			}
 		}
@@ -99,7 +102,7 @@ package mediaplayer.core
 		{
 			tracks[playIndex].playing = false;
 			
-			if(playIndex + 1 > tracks.length)
+			if(playIndex + 1 > tracks.length - 1)
 			{
 				playIndex = 0;
 			}
@@ -115,20 +118,18 @@ package mediaplayer.core
 
 		private function onLoad(event:Event):void
 		{
-			tracks[loadIndex].removeEventListener(Event.COMPLETE, onLoad);
 			addChild(tracks[loadIndex]);
-
-			if(tracks[loadIndex].width > maxContentWidth)
-			{
-				maxContentWidth = tracks[loadIndex].width + 1;
-				render();
-			}
-
+			tracks[loadIndex].y = loadIndex * tracks[loadIndex].height;
 			loadIndex++;
 		}
 		
-		private function setPlayIndex(event:Event):void
+		private function handlePreviousSound(event:Event):void
 		{
+			var temporaryTrack:Track = event.target as Track;
+			
+			tracks[playIndex].playing = false;
+			temporaryTrack.playing = true;
+
 			for(var i:uint = 0;i < tracks.length;i++)
 			{
 				if(tracks[i].playing == true)
@@ -136,6 +137,8 @@ package mediaplayer.core
 					playIndex = i;
 				}
 			}
+			
+			dispatchEvent(new Event("NEXT"));
 		}
 		
 		private function loadingErrorHandler(event:IOErrorEvent):void {
@@ -143,13 +146,6 @@ package mediaplayer.core
 			urlLoader.removeEventListener(IOErrorEvent.IO_ERROR, loadingErrorHandler);
 			
 			throw new Error("Loading of Tracks XML failed " + event.text);
-		}
-		
-		private function render():void
-		{
-			this.graphics.clear();
-			this.graphics.lineStyle(1, 0x000000);
-			this.graphics.drawRect(0, 0, maxContentWidth, 16);
 		}
 	}
 }

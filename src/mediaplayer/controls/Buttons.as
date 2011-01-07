@@ -38,7 +38,6 @@ package mediaplayer.controls
 			pauseButton.useHandCursor = true;
 			pauseButton.alpha = 0.5;
 			pauseButton.enabled = false;
-			pauseButton.addEventListener(MouseEvent.CLICK, onPauseHandler);
 			addChild(pauseButton);
 			
 			stopButton.upState = drawStopIcon();
@@ -50,12 +49,14 @@ package mediaplayer.controls
 			stopButton.useHandCursor = true;
 			stopButton.alpha = 0.5;
 			stopButton.enabled = false;
-			stopButton.addEventListener(MouseEvent.CLICK, onStopHandler);
 			addChild(stopButton);
 		}
 		
-		private function onPlayHandler(event:MouseEvent):void
+		public function pressPlay():void
 		{
+			pauseButton.removeEventListener(MouseEvent.CLICK, onPauseHandler);
+			stopButton.removeEventListener(MouseEvent.CLICK, onStopHandler);
+			
 			stopButton.alpha = 1;
 			stopButton.enabled = true;
 			pauseButton.alpha = 1;
@@ -63,21 +64,38 @@ package mediaplayer.controls
 			playButton.alpha = 0.5;
 			playButton.enabled = false;
 			
+			playButton.removeEventListener(MouseEvent.CLICK, onPlayHandler);
+			pauseButton.addEventListener(MouseEvent.CLICK, onPauseHandler);
+			stopButton.addEventListener(MouseEvent.CLICK, onStopHandler);
+		}
+		
+		private function onPlayHandler(event:MouseEvent = null):void
+		{
+			pressPlay();
 			dispatchEvent(new Event("PLAY"));
 		}
 		
 		private function onPauseHandler(event:MouseEvent):void
 		{
+			playButton.removeEventListener(MouseEvent.CLICK, onPlayHandler);
+			stopButton.removeEventListener(MouseEvent.CLICK, onStopHandler);
+			
 			pauseButton.alpha = 0.5;
 			pauseButton.enabled = false;
 			playButton.alpha = 1;
 			playButton.enabled = true;
 			
+			playButton.addEventListener(MouseEvent.CLICK, onPlayHandler);
+			pauseButton.removeEventListener(MouseEvent.CLICK, onPauseHandler);
+			stopButton.addEventListener(MouseEvent.CLICK, onStopHandler);
 			dispatchEvent(new Event("PAUSE"));
 		}
 		
 		private function onStopHandler(event:MouseEvent):void
 		{
+			playButton.removeEventListener(MouseEvent.CLICK, onPlayHandler);
+			pauseButton.removeEventListener(MouseEvent.CLICK, onPauseHandler);
+			
 			pauseButton.alpha = 0.5;
 			pauseButton.enabled = false;
 			playButton.alpha = 1;
@@ -85,6 +103,8 @@ package mediaplayer.controls
 			stopButton.alpha = 0.5;
 			stopButton.enabled = false;
 			
+			playButton.addEventListener(MouseEvent.CLICK, onPlayHandler);
+			stopButton.removeEventListener(MouseEvent.CLICK, onStopHandler);
 			dispatchEvent(new Event("STOP"));
 		}
 		

@@ -37,9 +37,7 @@ package mediaplayer.core
 			sound.load(new URLRequest("runtime-assets/" + url));
 			sound.addEventListener(Event.COMPLETE, onSoundLoad);
 			sound.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
-			soundChannel.addEventListener(Event.SOUND_COMPLETE, onSoundComplete);
 
-			//TODO: sounds will be played simultaniously after double click
 			this.doubleClickEnabled = true;
 			this.mouseChildren = false;
 			this.addEventListener(MouseEvent.DOUBLE_CLICK, onDoubleClick);
@@ -47,7 +45,7 @@ package mediaplayer.core
 
 		private function onDoubleClick(event:MouseEvent):void
 		{
-			playing = true;
+			tf.backgroundColor = 0x3333AA;
 			dispatchEvent(new Event("SOUND_STARTED"));
 		}
 		
@@ -69,7 +67,6 @@ package mediaplayer.core
 		
 		private function onSoundComplete(event:Event):void {
 			removeListeners();
-			
 			dispatchEvent(new Event(Event.SOUND_COMPLETE));
 		}
 		
@@ -91,6 +88,7 @@ package mediaplayer.core
 		{
 			sound.removeEventListener(Event.COMPLETE, onSoundLoad);
 			sound.removeEventListener(IOErrorEvent.IO_ERROR, onIOError);
+			soundChannel.removeEventListener(Event.SOUND_COMPLETE, onSoundComplete);
 		}
 		
 		public function set volume(value:Number):void
@@ -118,11 +116,20 @@ package mediaplayer.core
 			return soundChannel.position;
 		}
 		
+		public function set elapsedTime(value:Number):void
+		{
+			stopSound();
+			soundChannel = sound.play(value, 0, new SoundTransform(_volume));
+			soundChannel.addEventListener(Event.SOUND_COMPLETE, onSoundComplete);
+		}
+		
 		public function set pan(value:Number):void
 		{
 			if(soundChannel)
 			{
-				soundChannel.soundTransform.pan = value;
+				var transform:SoundTransform = soundChannel.soundTransform;
+				transform.pan = value;
+				soundChannel.soundTransform = transform;
 			}
 		}
 		
@@ -145,6 +152,7 @@ package mediaplayer.core
 				tf.backgroundColor = 0x3333AA;
 
 				soundChannel = sound.play(lastPosition, 0, new SoundTransform(_volume));
+				soundChannel.addEventListener(Event.SOUND_COMPLETE, onSoundComplete);
 			}
 			else
 			{

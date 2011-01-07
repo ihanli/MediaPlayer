@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <tracklist>
 	<track source="sounds/test.mp3" />
+	<track source="sounds/test1.mp3" />
 </tracklist>

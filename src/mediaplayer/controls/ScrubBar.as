@@ -24,12 +24,14 @@ package mediaplayer.controls
 			tfMaxTime.y = super.y;
 			tfMaxTime.autoSize = TextFieldAutoSize.LEFT;
 			
-			if(pmax > 1){
+			if(pmax >= 1000){
 				tfMaxTime.text = mSecondsToTime(pmax);
 			}
 			else{
 				tfMaxTime.text = "0:0"
 			}
+			
+			tfMaxTime.width = tfMaxTime.textWidth * 1.7;
 			
 			tfCurrentTime.defaultTextFormat = new TextFormat("Arial", 10);
 			tfCurrentTime.multiline = false;
@@ -37,7 +39,7 @@ package mediaplayer.controls
 			tfCurrentTime.wordWrap = true;
 			tfCurrentTime.height = super.height;
 			tfCurrentTime.text = "0:0";
-//			tfCurrentTime.width = tfCurrentTime.textWidth * 2;
+			tfCurrentTime.width = tfCurrentTime.textWidth * 1.7;
 			tfCurrentTime.autoSize = TextFieldAutoSize.LEFT;
 
 			tfCurrentTime.x = super.x - tfCurrentTime.textWidth - 10;
@@ -50,7 +52,6 @@ package mediaplayer.controls
 		protected override function mouseMoveHandler(event:MouseEvent):void
 		{
 			super.mouseMoveHandler(event);
-			
 			tfCurrentTime.text = mSecondsToTime(super.value);
 			dispatchEvent(new Event("TIME_CHANGED"));
 		}
