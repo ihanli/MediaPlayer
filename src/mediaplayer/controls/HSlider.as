@@ -5,6 +5,9 @@ package mediaplayer.controls
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
+	import flash.text.TextField;
+	import flash.text.TextFieldAutoSize;
+	import flash.text.TextFormat;
 	
 	public class HSlider extends Sprite
 	{
@@ -18,6 +21,9 @@ package mediaplayer.controls
 		private var thumb:Sprite = new Sprite;
 		private const THUMBDIMENSION:uint = 10;
 		private const THUMBOFFSET:uint = 2;
+		
+		private var tfLeft:TextField = new TextField;
+		private var tfRight:TextField = new TextField;
 		
 		public function HSlider(pmin:int = 0, pmax:int = 1, startValue:Number = 0.3)
 		{
@@ -38,7 +44,25 @@ package mediaplayer.controls
 			thumb.graphics.beginFill(0xFFFFFF);
 			thumb.graphics.drawRect(THUMBOFFSET, THUMBOFFSET, THUMBDIMENSION, THUMBDIMENSION);
 			thumb.graphics.endFill();
+			
+			tfRight.defaultTextFormat = new TextFormat("Arial", 10);
+			tfRight.multiline = false;
+			tfRight.selectable = false;
+			tfRight.wordWrap = true;
+			tfRight.height = THUMBDIMENSION + 2* THUMBOFFSET;
+			tfRight.x = this.x + RAILWIDTH + THUMBDIMENSION + 2 * THUMBOFFSET;
+			tfRight.y = this.y;
+			
+			tfLeft.defaultTextFormat = new TextFormat("Arial", 10);
+			tfLeft.multiline = false;
+			tfLeft.selectable = false;
+			tfLeft.wordWrap = true;
+			tfLeft.height = THUMBDIMENSION + 2* THUMBOFFSET;
+			tfLeft.x = this.x - tfLeft.textWidth - THUMBDIMENSION;
+			tfLeft.y = this.y;
 
+			addChild(tfRight);
+			addChild(tfLeft);
 			addChild(thumb);
 			thumb.addEventListener(MouseEvent.MOUSE_DOWN, mouseDownHandler);
 		}
@@ -69,6 +93,18 @@ package mediaplayer.controls
 			
 			_value = (_max * draggedInstance.x / RAILWIDTH) + (_min * (RAILWIDTH - draggedInstance.x) / RAILWIDTH);
 		}
+		
+		public function set leftText(value:String):void
+		{
+			tfLeft.text = value.toString();
+			tfLeft.autoSize = TextFieldAutoSize.RIGHT;
+		}
+		
+		public function set rightText(value:String):void
+		{
+			tfRight.text = value.toString();
+			tfRight.autoSize = TextFieldAutoSize.LEFT;
+		}
 
 		public function get min():int
 		{
@@ -79,7 +115,7 @@ package mediaplayer.controls
 		{
 			_min = value;
 			
-			value = (_max * thumb.x / RAILWIDTH) + (_min * (RAILWIDTH - thumb.x) / RAILWIDTH);
+			this.value = (max * thumb.x / RAILWIDTH) + (min * (RAILWIDTH - thumb.x) / RAILWIDTH);
 		}
 
 		public function get max():int
@@ -91,7 +127,7 @@ package mediaplayer.controls
 		{
 			_max = value;
 			
-			value = (_max * thumb.x / RAILWIDTH) + (_min * (RAILWIDTH - thumb.x) / RAILWIDTH);
+			this.value = (max * thumb.x / RAILWIDTH) + (min * (RAILWIDTH - thumb.x) / RAILWIDTH);
 		}
 
 		public function get value():Number
