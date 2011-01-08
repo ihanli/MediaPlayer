@@ -11,31 +11,42 @@ package mediaplayer.core
 		private var timeline:ScrubBar = new ScrubBar(0, 0);
 		private var controls:Buttons = new Buttons();
 		private var tracklist:Tracklist = new Tracklist();
+		private var balance:BalanceControl = new BalanceControl(-1, 1, 0);
 		
 		public function MediaPlayer()
 		{
 			super();
 			
 			volumeSlider.addEventListener("VOLUME_CHANGED", volumeChanged);
+			
+			balance.addEventListener("BALANCE_CHANGED", balanceChanged);
+			balance.x = 0;
+			balance.y = 15;
 
 			timeline.x = 0;
-			timeline.y = 15;
+			timeline.y = 30;
 			
 			controls.x = 0;
-			controls.y = 30;
+			controls.y = 45;
 			controls.addEventListener("PLAY", onPlay);
 			controls.addEventListener("PAUSE", onPause);
 			controls.addEventListener("STOP", onStop);
 			
 			tracklist.source = "runtime-assets/tracks.xml";
 			tracklist.x = 0;
-			tracklist.y = 51;
+			tracklist.y = 66;
 			tracklist.addEventListener("NEXT", refreshControls);
 			
 			addChild(volumeSlider);
+			addChild(balance);
 			addChild(timeline);
 			addChild(controls);
 			addChild(tracklist);
+		}
+		
+		private function balanceChanged(event:Event = null):void
+		{
+			tracklist.pan = balance.value;
 		}
 		
 		private function onTimeChanged(event:Event):void
@@ -56,6 +67,7 @@ package mediaplayer.core
 		private function onPlay(event:Event = null):void
 		{
 			volumeChanged();
+			balanceChanged();
 			tracklist.start();
 			timeline.max = tracklist.totalTime;
 			
@@ -83,6 +95,7 @@ package mediaplayer.core
 		{
 			removeEventListener(Event.ENTER_FRAME, onEnterFrame);
 			volumeChanged();
+			balanceChanged();
 			timeline.max = tracklist.totalTime;
 			timeline.value = 0;
 			controls.pressPlay();
