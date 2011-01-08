@@ -97,8 +97,7 @@ package mediaplayer.controls
 		public function set leftText(value:String):void
 		{
 			tfLeft.text = value.toString();
-			tfLeft.autoSize = TextFieldAutoSize.RIGHT;
-			tfLeft.x = this.x - tfLeft.textWidth - THUMBDIMENSION;
+			tfLeft.x = this.x - tfLeft.textWidth - THUMBDIMENSION - THUMBOFFSET * 2;
 		}
 		
 		public function set rightText(value:String):void

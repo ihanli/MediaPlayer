@@ -18,6 +18,7 @@ package mediaplayer.core
 		private var _url:String;
 		private var _playing:Boolean = false;
 		private var _volume:Number = 0;
+		private var _pan:Number = 0;
 		private var tf:TextField = new TextField;
 		
 		public function Track(url:String)
@@ -125,6 +126,8 @@ package mediaplayer.core
 		
 		public function set pan(value:Number):void
 		{
+			_pan = value;
+			
 			if(soundChannel)
 			{
 				var transform:SoundTransform = soundChannel.soundTransform;
@@ -135,7 +138,7 @@ package mediaplayer.core
 		
 		public function get pan():Number
 		{
-			return soundChannel.soundTransform.pan;
+			return _pan;
 		}
 
 		public function get playing():Boolean
@@ -152,6 +155,7 @@ package mediaplayer.core
 				tf.backgroundColor = 0x3333AA;
 
 				soundChannel = sound.play(lastPosition, 0, new SoundTransform(_volume));
+				pan = _pan;
 				soundChannel.addEventListener(Event.SOUND_COMPLETE, onSoundComplete);
 			}
 			else
