@@ -8,6 +8,8 @@ package mediaplayer.controls
 		public function VolumeControl()
 		{
 			super();
+			super.leftText = "0%";
+			super.rightText = "100%";
 		}
 		
 		protected override function mouseMoveHandler(event:MouseEvent):void
