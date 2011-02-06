@@ -47,7 +47,7 @@ package mediaplayer.core
 		private function onDoubleClick(event:MouseEvent):void
 		{
 			tf.backgroundColor = 0x3333AA;
-			dispatchEvent(new Event("SOUND_STARTED"));
+			dispatchEvent(new Event("sound_started"));
 		}
 		
 		public function pause():void
@@ -66,12 +66,14 @@ package mediaplayer.core
 			}
 		}
 		
-		private function onSoundComplete(event:Event):void {
+		private function onSoundComplete(event:Event):void
+		{
 			removeListeners();
 			dispatchEvent(new Event(Event.SOUND_COMPLETE));
 		}
 		
-		private function onSoundLoad(event:Event):void {
+		private function onSoundLoad(event:Event):void
+		{
 			removeListeners();
 			tf.text = sound.id3.artist + " - " + sound.id3.songName;
 			addChild(tf);
@@ -79,7 +81,8 @@ package mediaplayer.core
 		}
 		
 		//TODO: handle me
-		private function onIOError(event:Event):void {
+		private function onIOError(event:Event):void
+		{
 			removeListeners();
 
 			dispatchEvent(new ErrorEvent(ErrorEvent.ERROR));
@@ -97,9 +100,7 @@ package mediaplayer.core
 			_volume = value;
 			
 			if(soundChannel)
-			{
 				soundChannel.soundTransform = new SoundTransform(value);
-			}
 		}
 		
 		public function get volume():Number
@@ -129,11 +130,7 @@ package mediaplayer.core
 			_pan = value;
 			
 			if(soundChannel)
-			{
-				var transform:SoundTransform = soundChannel.soundTransform;
-				transform.pan = value;
-				soundChannel.soundTransform = transform;
-			}
+				soundChannel.soundTransform = new SoundTransform(volume, value);
 		}
 		
 		public function get pan():Number
@@ -165,6 +162,5 @@ package mediaplayer.core
 				stopSound();
 			}
 		}
-
 	}
 }
