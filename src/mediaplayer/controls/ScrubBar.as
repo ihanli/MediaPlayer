@@ -2,19 +2,18 @@ package mediaplayer.controls
 {
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import components.HSlider;
 
 	public class ScrubBar extends HSlider
 	{
-		public function ScrubBar(pmin:int=0, pmax:int=1)
+		public function ScrubBar(pmin:int = 0, pmax:int = 1)
 		{
 			super(pmin, pmax, 0);
 			
-			if(pmax >= 1000){
+			if(pmax >= 1000)
 				super.rightText = mSecondsToTime(pmax);
-			}
-			else{
+			else
 				super.rightText = "0:0";
-			}
 
 			super.leftText = "0:0";
 		}
@@ -23,7 +22,7 @@ package mediaplayer.controls
 		{
 			super.mouseMoveHandler(event);
 			super.leftText = mSecondsToTime(super.value);
-			dispatchEvent(new Event("TIME_CHANGED"));
+			dispatchEvent(new Event("time_changed"));
 		}
 		
 		private function mSecondsToTime(value:uint):String

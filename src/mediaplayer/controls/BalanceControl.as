@@ -2,10 +2,11 @@ package mediaplayer.controls
 {
 	import flash.events.MouseEvent;
 	import flash.events.Event
+	import components.HSlider;
 	
 	public class BalanceControl extends HSlider
 	{
-		public function BalanceControl(pmin:int=0, pmax:int=1, startValue:Number=0.3)
+		public function BalanceControl(pmin:int = 0, pmax:int = 1, startValue:Number = 0.3)
 		{
 			super(pmin, pmax, startValue);
 			super.leftText = "left";
@@ -16,7 +17,7 @@ package mediaplayer.controls
 		{
 			super.mouseMoveHandler(event);
 			
-			dispatchEvent(new Event("BALANCE_CHANGED"));
+			dispatchEvent(new Event("balance_changed"));
 		}
 	}
 }

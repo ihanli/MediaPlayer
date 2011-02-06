@@ -2,6 +2,7 @@ package mediaplayer.controls
 {
 	import flash.events.MouseEvent;
 	import flash.events.Event
+	import components.HSlider;
 	
 	public class VolumeControl extends HSlider
 	{
@@ -16,7 +17,7 @@ package mediaplayer.controls
 		{
 			super.mouseMoveHandler(event);
 			
-			dispatchEvent(new Event("VOLUME_CHANGED"));
+			dispatchEvent(new Event("volume_changed"));
 		}
 	}
 }
