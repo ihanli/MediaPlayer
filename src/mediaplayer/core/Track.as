@@ -1,5 +1,7 @@
 package mediaplayer.core
 {
+	import components.DragableItem;
+	
 	import flash.display.MovieClip;
 	import flash.events.*;
 	import flash.media.Sound;
@@ -10,7 +12,7 @@ package mediaplayer.core
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
 	
-	public class Track extends MovieClip
+	public class Track extends DragableItem
 	{
 		private var sound:Sound = new Sound;
 		private var soundChannel:SoundChannel = new SoundChannel;
@@ -27,11 +29,10 @@ package mediaplayer.core
 
 			tf.defaultTextFormat = new TextFormat("Arial", 10);
 			tf.background = true;
-			tf.backgroundColor = 0xFFFFFF;
 			tf.multiline = false;
 			tf.selectable = false;
 			tf.x = 0;
-			tf.y = 0;
+			tf.y = 1;
 			tf.autoSize = TextFieldAutoSize.LEFT;
 
 			_url = url
@@ -46,7 +47,6 @@ package mediaplayer.core
 
 		private function onDoubleClick(event:MouseEvent):void
 		{
-			tf.backgroundColor = 0x3333AA;
 			dispatchEvent(new Event("sound_started"));
 		}
 		
@@ -146,20 +146,62 @@ package mediaplayer.core
 		public function set playing(value:Boolean):void
 		{
 			_playing = value;
+			selected = value;
 			
-			if(_playing == true)
+			if(_playing)
 			{
-				tf.backgroundColor = 0x3333AA;
-
 				soundChannel = sound.play(lastPosition, 0, new SoundTransform(_volume));
 				pan = _pan;
 				soundChannel.addEventListener(Event.SOUND_COMPLETE, onSoundComplete);
 			}
 			else
 			{
-				tf.backgroundColor = 0xFFFFFF;
 				lastPosition = 0;
 				stopSound();
+			}
+			
+			render();
+		}
+		
+		override protected function mouseUpHandler(e:MouseEvent):void
+		{
+			var temp:Track = e.target as Track;
+			
+			super.mouseUpHandler(e);
+			
+			if(temp && dragging)
+			{
+				temp.render();
+				temp.dispatchEvent(new Event("stop_drag"));
+			}
+			
+			dragging = false;
+		}
+		
+		private function renderMarker():void
+		{
+			if(mouseState == OVER)
+				super.graphics.lineStyle(2, 0x00FF00);
+			else				
+				super.graphics.lineStyle(2, 0xFFFFFF);
+
+			graphics.moveTo(this.x + 1, 1);
+			graphics.lineTo(this.x + tf.width - 1, 1);
+		}
+	
+		override protected function render():void
+		{		
+			if(dragging){
+				renderMarker();
+			}
+			else
+			{
+				super.graphics.lineStyle(2, 0xFFFFFF);
+				
+				graphics.moveTo(this.x + 1, 1);
+				graphics.lineTo(this.x + tf.width - 1, 1);
+				
+				tf.backgroundColor = selected ? 0x3333AA : 0xFFFFFF;
 			}
 		}
 	}
