@@ -9,6 +9,7 @@ package components
 	
 	public class MultiSelectableItem extends ToggleButtonBase
 	{
+		// container for selected items
 		private static var items:Vector.<MultiSelectableItem> = new Vector.<MultiSelectableItem>();
 		
 		public function MultiSelectableItem()
@@ -35,25 +36,32 @@ package components
 	
 			if(e.type == MouseEvent.CLICK)
 			{
-				if(items.indexOf(clickedInstance) == -1){
+				// if the clicked item is not already in the container
+				if(items.indexOf(clickedInstance) == -1)
+				{
+					// remove every selected item (except for clicked item) if control key wasn't pressed while click
 					if(!e.ctrlKey && items.length + 1 > 1)
 					{	
 						for(var i:uint = 0;i < length + 1;i++)				
 							items.pop().selected = false;
 					}
 
+					// add clicked item to container
 					items.push(clickedInstance);
 					length = items.length;
 				}
+				// if clicked item was added earlier
 				else
 				{
 					if(!e.ctrlKey)
 					{
 						length = items.length;
 	
+						// if click without ctrl-key -> deselect every item
 						for(var j:uint = 0;j < length;j++)				
 							items.pop().selected = false;
 	
+						// add clicked item if more than one item was selected
 						if(length > 1)
 						{
 							items.push(clickedInstance);

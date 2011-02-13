@@ -118,6 +118,7 @@ package mediaplayer.core
 			timeline.addEventListener("time_changed", onTimeChanged);
 		}
 		
+		// sets buttons to enabled (or not enabled), depending on which button was "pressed"
 		private function triggerDependentButtonState(button:String):void
 		{
 			switch(button){

@@ -31,6 +31,7 @@ package components
 
 			temp = event.target as DragableItem;
 			
+			// set height of proxy according to the number of selected items
 			if(numberOfSelected > 0)
 				bitmapHeight = height * numberOfSelected;
 			else
@@ -45,12 +46,14 @@ package components
 			
 			for(var i:uint = 0;i < numberOfSelected;i++)
 			{
+				// translate along y-axis, except for first item (is at x=y=0 by default)
 				if(i > 0)
 					m.translate(0, height);
 					
 				bitmapData.draw(getItemFromContainer(i), m, null, null, null, true);
 			}
 
+			// add proxy to stage but don't show it yet
 			stage.addChild(proxy);
 			proxy.visible = false;
 			dragging = false;
@@ -58,6 +61,7 @@ package components
 		
 		protected function mouseUpHandler(e:MouseEvent):void
 		{			
+			// remove listeners and proxy
 			stage.removeEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
 			stage.removeEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
 			stage.removeEventListener(Event.MOUSE_LEAVE, mouseUpHandler);
@@ -68,9 +72,14 @@ package components
 		
 		protected function mouseMoveHandler(e:MouseEvent):void
 		{
+			// indicates that dragging started
 			dragging = true;
+			
+			// set proxy to mouse position
 			proxy.x = mouseX;
 			proxy.y = mouseY + temp.parent.y + temp.y;
+			
+			// now that dragging started, proxy can be shown
 			proxy.visible = true;
 		}
 	}

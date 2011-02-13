@@ -44,18 +44,79 @@ package mediaplayer.core
 			this.mouseChildren = false;
 			this.addEventListener(MouseEvent.DOUBLE_CLICK, onDoubleClick);
 		}
+		
+		private function removeListeners():void
+		{
+			sound.removeEventListener(Event.COMPLETE, onSoundLoad);
+			sound.removeEventListener(IOErrorEvent.IO_ERROR, onIOError);
+			soundChannel.removeEventListener(Event.SOUND_COMPLETE, onSoundComplete);
+		}
 
-		private function onDoubleClick(event:MouseEvent):void
+		private function onDoubleClick(e:MouseEvent):void
 		{
 			dispatchEvent(new Event("sound_started"));
 		}
 		
-		public function pause():void
+		private function onSoundComplete(e:Event):void
 		{
-			lastPosition = soundChannel.position;
-			stopSound();
+			removeListeners();
+			dispatchEvent(new Event(Event.SOUND_COMPLETE));
 		}
+		
+		private function onSoundLoad(e:Event):void
+		{
+			removeListeners();
+			tf.text = sound.id3.artist + " - " + sound.id3.songName;
+			addChild(tf);
+			dispatchEvent(new Event(Event.COMPLETE));
+		}
+		
+		//TODO: handle me
+		private function onIOError(e:Event):void
+		{
+			removeListeners();
+			dispatchEvent(new ErrorEvent(ErrorEvent.ERROR));
+		}
+		
+		override protected function mouseUpHandler(e:MouseEvent):void
+		{
+			var temp:Track = e.target as Track;
+			
+			super.mouseUpHandler(e);
+			
+			// mouseUp event fired after dragging
+			if(temp)
+			{
+				if(dragging)
+					temp.dispatchEvent(new Event("stop_drag"));
+				
+				dragging = false;
+				temp.render();
+			}
+		}
+		
+		// renders the marker, which indicates where the selected items will be dropped
+		private function renderMarker():void
+		{
+			if(mouseState == OVER)
+				super.graphics.lineStyle(2, 0x00FF00);
+			else				
+				super.graphics.lineStyle(2, 0xFFFFFF);
+		}
+		
+		override protected function render():void
+		{		
+			if(dragging)
+				renderMarker();
+			else
+				super.graphics.lineStyle(2, 0xFFFFFF);
 
+			graphics.moveTo(this.x + 1, 1);
+			graphics.lineTo(this.x + tf.width - 1, 1);
+			
+			tf.backgroundColor = selected ? 0x3333AA : 0xFFFFFF;
+		}
+		
 		private function stopSound():void
 		{
 			if(soundChannel)
@@ -66,35 +127,12 @@ package mediaplayer.core
 			}
 		}
 		
-		private function onSoundComplete(event:Event):void
+		public function pause():void
 		{
-			removeListeners();
-			dispatchEvent(new Event(Event.SOUND_COMPLETE));
+			lastPosition = soundChannel.position;
+			stopSound();
 		}
-		
-		private function onSoundLoad(event:Event):void
-		{
-			removeListeners();
-			tf.text = sound.id3.artist + " - " + sound.id3.songName;
-			addChild(tf);
-			dispatchEvent(new Event(Event.COMPLETE));
-		}
-		
-		//TODO: handle me
-		private function onIOError(event:Event):void
-		{
-			removeListeners();
 
-			dispatchEvent(new ErrorEvent(ErrorEvent.ERROR));
-		}
-		
-		private function removeListeners():void
-		{
-			sound.removeEventListener(Event.COMPLETE, onSoundLoad);
-			sound.removeEventListener(IOErrorEvent.IO_ERROR, onIOError);
-			soundChannel.removeEventListener(Event.SOUND_COMPLETE, onSoundComplete);
-		}
-		
 		public function set volume(value:Number):void
 		{
 			_volume = value;
@@ -161,48 +199,6 @@ package mediaplayer.core
 			}
 			
 			render();
-		}
-		
-		override protected function mouseUpHandler(e:MouseEvent):void
-		{
-			var temp:Track = e.target as Track;
-			
-			super.mouseUpHandler(e);
-			
-			if(temp && dragging)
-			{
-				temp.render();
-				temp.dispatchEvent(new Event("stop_drag"));
-			}
-			
-			dragging = false;
-		}
-		
-		private function renderMarker():void
-		{
-			if(mouseState == OVER)
-				super.graphics.lineStyle(2, 0x00FF00);
-			else				
-				super.graphics.lineStyle(2, 0xFFFFFF);
-
-			graphics.moveTo(this.x + 1, 1);
-			graphics.lineTo(this.x + tf.width - 1, 1);
-		}
-	
-		override protected function render():void
-		{		
-			if(dragging){
-				renderMarker();
-			}
-			else
-			{
-				super.graphics.lineStyle(2, 0xFFFFFF);
-				
-				graphics.moveTo(this.x + 1, 1);
-				graphics.lineTo(this.x + tf.width - 1, 1);
-				
-				tf.backgroundColor = selected ? 0x3333AA : 0xFFFFFF;
-			}
 		}
 	}
 }
